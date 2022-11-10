@@ -12,17 +12,17 @@ const {
 
 const { ctrlWrapper } = require("../../Helpers");
 
-// const { validateBody } = require("../../middlewares");
+const { validateBody } = require("../../middlewares");
 
-// const schemas = require("../../schemas/contacts");
+const schemas = require("../../schemas/contacts");
 
 router.get("/", ctrlWrapper(listContacts));
 
 router.get("/:contactId", ctrlWrapper(getContactById));
 
-router.post("/", ctrlWrapper(addContact));
+router.post("/", validateBody(schemas), ctrlWrapper(addContact));
 
-router.put("/:contactId", ctrlWrapper(updateContactID));
+router.put("/:contactId", validateBody(schemas), ctrlWrapper(updateContactID));
 
 router.delete("/:contactId", ctrlWrapper(removeContact));
 
