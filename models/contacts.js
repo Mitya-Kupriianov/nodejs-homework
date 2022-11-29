@@ -1,70 +1,55 @@
-const fs = require("fs/promises");
-const path = require("path");
-const { nanoid } = require("nanoid");
+const { Schema, model } = require("mongoose");
 
-const contactsPath = path.join(__dirname, "contacts.json");
+const Joi = require("joi");
 
-async function updateContacts(contacts) {
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-}
+const { handleSaveErrors } = require("../helpers");
 
-// TODO: задокументировать каждую функцию
-async function listContacts() {
-  // ...твой код
-  const contacts = await fs.readFile(contactsPath);
-  return JSON.parse(contacts);
-}
+const contactSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Set name for contact"],
+    },
+    email: {
+      type: String,
+      required: [true, "Set email for contact"],
+    },
+    phone: {
+      type: String,
+      required: [true, "Set phone for contact"],
+      unique: true,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { versionKey: false, timestamps: true },
+);
 
-async function getContactById(contactId) {
-  // ...твой код
-  const contacts = await listContacts();
-  const result = contacts.find((contact) => contact.id === contactId);
-  return result || null;
-}
+contactSchema.post("save", handleSaveErrors);
 
-async function removeContact(contactId) {
-  // ...твой код
-  const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-  if (index === -1) {
-    return null;
-  }
-  const [result] = contacts.splice(index, 1);
-  await updateContacts(contacts);
-  return result;
-}
+const Contact = model("contact", contactSchema);
 
-async function addContact({ name, email, phone }) {
-  // ...твой код
-  const contacts = await listContacts();
-  const newContact = {
-    id: nanoid(),
-    name,
-    email,
-    phone,
-  };
-  contacts.push(newContact);
-  await updateContacts(contacts);
-  return newContact;
-}
+const addSchema = Joi.object({
+  name: Joi.string().min(3).max(30).required(),
+  email: Joi.string()
+    .email({
+      minDomainSegments: 2,
+      tlds: { allow: ["com", "net", "ca", "uk", "org"] },
+    })
+    .required(),
+  phone: Joi.string().min(3).max(30).required(),
+  favorite: Joi.boolean(),
+});
 
-async function updateContactID(contactId, data) {
-  // ...твой код
-  const contacts = await listContacts();
-  const index = contacts.findIndex((contact) => contact.id === contactId);
-  if (index === -1) {
-    return null;
-  }
-  const id = contactId;
-  contacts[index] = { id, ...data };
-  await updateContacts(contacts);
-  return contacts[index];
-}
+const updateFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
 
-module.exports = {
-  listContacts,
-  getContactById,
-  removeContact,
-  addContact,
-  updateContactID,
+const schemas = {
+  addSchema,
+  updateFavoriteSchema,
 };
+
+module.exports = { Contact, schemas };
