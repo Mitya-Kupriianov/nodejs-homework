@@ -1,7 +1,5 @@
 const { Contact } = require("../../models/contacts");
 
-const { HttpError } = require("../../Helpers");
-
 const listContacts = async (req, res, next) => {
   const { _id: owner } = req.user;
   const { page = 1, limit = 10, favorite } = req.query;
