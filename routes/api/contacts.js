@@ -13,27 +13,39 @@ const {
 
 const { ctrlWrapper } = require("../../Helpers");
 
-const { validateBody, isValidId } = require("../../middlewares");
+const { validateBody, isValidId, authenticate } = require("../../middlewares");
 
 const { schemas } = require("../../models/contacts");
 
-router.get("/", ctrlWrapper(listContacts));
+router.get("/", authenticate, ctrlWrapper(listContacts));
 
-router.get("/:contactId", isValidId, ctrlWrapper(getContactById));
+router.get("/:contactId", authenticate, isValidId, ctrlWrapper(getContactById));
 
-router.post("/", validateBody(schemas.addSchema), ctrlWrapper(addContact));
+router.post(
+  "/",
+  authenticate,
+  validateBody(schemas.addSchema),
+  ctrlWrapper(addContact),
+);
 
 router.put(
   "/:contactId",
+  authenticate,
   isValidId,
   validateBody(schemas.addSchema),
   ctrlWrapper(updateContactID),
 );
 
-router.delete("/:contactId", isValidId, ctrlWrapper(removeContact));
+router.delete(
+  "/:contactId",
+  authenticate,
+  isValidId,
+  ctrlWrapper(removeContact),
+);
 
 router.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
   validateBody(schemas.updateFavoriteSchema),
   ctrlWrapper(updateContactFavorite),
