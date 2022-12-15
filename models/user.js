@@ -28,6 +28,13 @@ const userSchema = new Schema(
       type: String,
       default: null,
     },
+    verify: {
+      type: Boolean,
+      default: false,
+    },
+    verificationCode: {
+      type: String,
+    },
   },
 
   { versionKey: false, timestamps: true },
@@ -49,10 +56,16 @@ const updateSubscription = Joi.object({
     .valid(...subscriptionStatus)
     .error(new Error("Subscription must be one of [starter, pro, business]")),
 });
+
+const verifySchema = Joi.object({
+  email: Joi.string().pattern(emailRegexp).required(),
+});
+
 const schemas = {
   signupSchema,
   loginSchema,
   updateSubscription,
+  verifySchema,
 };
 
 const User = model("user", userSchema);
