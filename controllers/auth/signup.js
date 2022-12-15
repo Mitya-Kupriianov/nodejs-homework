@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { User } = require("../../models/user");
-
+const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 
 const { nanoid } = require("nanoid");
@@ -21,12 +21,14 @@ const signup = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const avatarUrl = gravatar.url(email);
 
   const verificationCode = nanoid();
 
   const newUser = await User.create({
     email,
     password: hashPassword,
+
     verificationCode,
   });
 
@@ -36,6 +38,11 @@ const signup = async (req, res) => {
     html: `<a target="_blank" href="${BASE_URL}/api/auth/verify${verificationCode}">Click to verify</a>`,
   };
   await sendEmail(mail);
+
+    avatarUrl,
+  });
+
+
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
   });

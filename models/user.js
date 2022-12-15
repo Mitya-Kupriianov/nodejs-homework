@@ -24,10 +24,11 @@ const userSchema = new Schema(
       enum: subscriptionStatus,
       default: "starter",
     },
-    token: {
+    avatarUrl: {
       type: String,
-      default: null,
+      require: true,
     },
+
     verify: {
       type: Boolean,
       default: false,
@@ -35,6 +36,10 @@ const userSchema = new Schema(
     verificationCode: {
       type: String,
     },
+
+    token: { type: String, default: "" },
+    avatarURL: { type: String, require: true },
+
   },
 
   { versionKey: false, timestamps: true },
@@ -57,8 +62,12 @@ const updateSubscription = Joi.object({
     .error(new Error("Subscription must be one of [starter, pro, business]")),
 });
 
+
 const verifySchema = Joi.object({
   email: Joi.string().pattern(emailRegexp).required(),
+
+const updateAvatar = Joi.object({
+  avatar: Joi.string(),
 });
 
 const schemas = {
@@ -66,6 +75,8 @@ const schemas = {
   loginSchema,
   updateSubscription,
   verifySchema,
+  updateAvatar,
+
 };
 
 const User = model("user", userSchema);
