@@ -28,10 +28,8 @@ const userSchema = new Schema(
       type: String,
       require: true,
     },
-    token: {
-      type: String,
-      default: null,
-    },
+    token: { type: String, default: "" },
+    avatarURL: { type: String, require: true },
   },
 
   { versionKey: false, timestamps: true },
@@ -53,10 +51,15 @@ const updateSubscription = Joi.object({
     .valid(...subscriptionStatus)
     .error(new Error("Subscription must be one of [starter, pro, business]")),
 });
+const updateAvatar = Joi.object({
+  avatar: Joi.string(),
+});
+
 const schemas = {
   signupSchema,
   loginSchema,
   updateSubscription,
+  updateAvatar,
 };
 
 const User = model("user", userSchema);

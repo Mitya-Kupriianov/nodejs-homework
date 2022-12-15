@@ -34,6 +34,7 @@ router.patch(
   "/avatars",
   authenticate,
   upload.single("avatar"),
+  validateBody(schemas.updateAvatar),
   ctrlWrapper(ctrl.updateAvatar),
 );
 
