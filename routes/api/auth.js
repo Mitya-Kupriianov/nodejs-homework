@@ -1,7 +1,7 @@
 const express = require("express");
 
 const ctrl = require("../../controllers/auth");
-const { ctrlWrapper } = require("../../Helpers");
+const { ctrlWrapper } = require("../../helpers");
 
 const { validateBody, authenticate, upload } = require("../../middlewares");
 

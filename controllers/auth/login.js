@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 
 const jwt = require("jsonwebtoken");
 
-const { HttpError } = require("../../Helpers");
+const { HttpError } = require("../../helpers");
 
 const dotenv = require("dotenv");
 

@@ -11,7 +11,7 @@ const {
   updateContactFavorite,
 } = require("../../controllers/contacts");
 
-const { ctrlWrapper } = require("../../Helpers");
+const { ctrlWrapper } = require("../../helpers");
 
 const { validateBody, isValidId, authenticate } = require("../../middlewares");
 
