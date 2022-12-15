@@ -3,7 +3,7 @@ const { User } = require("../../models/user");
 const gravatar = require("gravatar");
 const bcrypt = require("bcryptjs");
 
-const { HttpError } = require("../../Helpers");
+const { HttpError } = require("../../helpers");
 
 const signup = async (req, res) => {
   const { email, password } = req.body;
